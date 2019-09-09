@@ -1,0 +1,42 @@
+#!/bin/bash --login
+#PBS -N G16bench
+#PBS -l nodes=2,walltime=02:00:00
+#PBS -e ./G16.err
+#PBS -o ./G16.out
+
+module purge
+module load gaussian/g16_A.03
+
+SCRATCH=/scratch/$USER/G16bench
+if [ -d $SCRATCH ]
+then
+   rm -rf $SCRATCH
+fi
+mkdir $SCRATCH
+export GAUSS_SCRDIR=$SCRATCH
+
+cd $PBS_O_WORKDIR
+
+# SMP workflow
+JOB_FILE=input.gjf
+cp template.route Default.Route
+chmod 640 Default.Route
+( time g16 $JOB_FILE cores24.log ) 2> times
+rm Default.Route
+
+# Linda-specific workflow
+export GAUSS_LFLAGS='-opt "Tsnet.Node.lindarsharg: ssh"'
+export GAUSS_EXEDIR=$g16root/g16/linda-exe:$GAUSS_EXEDIR
+# Add line to Default.Route to set Linda workers, 1 process per node.
+cp template.route temp
+chmod 640 temp
+echo -n '-W- ' >> temp
+for i in `cat $PBS_NODEFILE`
+do
+   echo -n $i"," >> temp
+done
+echo >> temp
+sed 's/,$//' temp > Default.Route
+rm temp
+( time g16 $JOB_FILE cores48.log ) 2>> times
+rm Default.Route
