@@ -1,0 +1,24 @@
+# general:
+  SYSTEM   = CuInSe
+  ISTART   = 0
+  ICHARG   = 2
+  ENCUT    = 300
+  ISMEAR   = 0
+  SIGMA    = 0.01
+  LMAXMIX  = 4
+  ADDGRID = .TRUE.
+  PREC = accurate
+  MAXMEM   = 7680  # 7680 MB max memory per rank
+  NCORE    = 8
+  NPAR     = 4
+  KPAR     = 4
+
+# electron:
+  NELM    = 80       # number of electronic SC steps
+  NELMIN  = 3
+  EDIFF = 1E-5       # total energy difference between two electronic SC steps
+
+# optical
+  LORBIT = 11
+  NBANDS = 640       # original 832
+  LOPTICS = .TRUE.

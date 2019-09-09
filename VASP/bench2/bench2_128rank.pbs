@@ -1,0 +1,35 @@
+#!/bin/bash
+#PBS -N bench2_128rank
+#PBS -l nodes=16,walltime=00:20:00
+#PBS -o $PBS_JOBNAME.out
+#PBS -e $PBS_JOBNAME.time
+
+free_mem_per_node=`free | head -2 | tail -1 | awk '{ print $4 }'`  # Estimate of allocatable memory available per node, kB
+nodes=$PBS_NUM_NODES
+procpernode=8  # MPI processes to run per node
+ulimit -v $(($free_mem_per_node/$procpernode))
+
+module purge
+module load vasp/5.4.1
+
+JOB_BASENAME=$PBS_JOBNAME
+VASP="mpirun -np $((nodes*procpernode)) -perhost $procpernode vasp_gam"
+
+export SCRATCH=/scratch/$USER/${JOB_BASENAME:?}
+if [ -d $SCRATCH ]
+then
+   rm -rf $SCRATCH
+fi
+mkdir $SCRATCH
+
+cd $PBS_O_WORKDIR
+cp INCAR $SCRATCH/.
+cp KPOINTS $SCRATCH/.
+cp POSCAR $SCRATCH/.
+cp POTCAR $SCRATCH/.
+cd $SCRATCH
+
+time $VASP >& bench2_$((PBS_NUM_NODES*procpernode))ranks.log
+
+cp OUTCAR $PBS_O_WORKDIR/.
+

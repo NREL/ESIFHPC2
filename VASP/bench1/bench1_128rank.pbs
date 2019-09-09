@@ -1,0 +1,68 @@
+#!/bin/bash
+#PBS -N bench1_128rank
+#PBS -A hpc-apps
+#PBS -q batch-h
+#PBS -l nodes=16,walltime=24:00:00
+#PBS -M your.email@domain.name
+#PBS -m abe
+#PBS -o $PBS_JOBNAME.out
+#PBS -e $PBS_JOBNAME.time
+
+free_mem_per_node=`free | head -2 | tail -1 | awk '{ print $4 }'`  # Estimate of allocatable memory available per node, kB
+numnodes=$PBS_NUM_NODES
+rankspernode=8  # MPI processes to run per node
+ulimit -v $((free_mem_per_node/rankspernode))
+GWranks=$((rankspernode*2))  # GW can only use NPAR=#ranks, poor for high rank counts. Study GW scaling on separate scale over benchmark runs.
+
+module purge
+module load vasp/5.4.1
+
+JOB_BASENAME=$PBS_JOBNAME
+
+export SCRATCH=/scratch/$USER/${JOB_BASENAME:?}
+#if [ -d $SCRATCH ]
+#then
+#   rm -rf $SCRATCH
+#fi
+#mkdir $SCRATCH
+
+#cd $PBS_O_WORKDIR
+#cp KPOINTS $SCRATCH/.
+#cp POSCAR $SCRATCH/.
+#cp POTCAR $SCRATCH/.
+cd $SCRATCH
+
+#for i in gga hse gw
+for i in gw
+# Modify job parallelism parameters. GW seems to require default setting for KPAR.
+do
+   if [ $i = 'gga' ] || [ $i = 'hse' ]
+   then
+      NCORE=4
+      KPAR=8
+      NPAR=$((numnodes*rankspernode/NCORE/KPAR))
+      VASP="mpirun -n $((numnodes*rankspernode)) -perhost $rankspernode -hostfile $PBS_NODEFILE -print-rank-map vasp_std"
+      sed -e "s/NPAR *= [0-9]\{1,\}/NPAR = $NPAR/" \
+          -e "s/NCORE *= [0-9]\{1,\}/NCORE = $NCORE/" \
+          -e "s/KPAR *= [0-9]\{1,\}/KPAR = $KPAR/" $PBS_O_WORKDIR/INCAR-$i > INCAR
+   else
+      VASP="mpirun -n $GWranks -perhost $rankspernode -hostfile $PBS_NODEFILE -print-rank-map vasp_std"
+      cp $PBS_O_WORKDIR/INCAR-$i INCAR
+   fi
+   chmod 664 *
+   echo "Time for job bench1 component $i, $((numnodes*rankspernode)) ranks" >> $PBS_JOBNAME.time
+   time $VASP > LOG.$i
+   for j in WAVECAR WAVEDER CHGCAR OUTCAR OSZICAR PROCAR DOSCAR EIGENVAL
+   do
+      cp $j $j-$i
+   done
+   if [ $i = 'gga' ] || [ $i = 'hse' ]
+   then
+      cp OUTCAR-$i $PBS_O_WORKDIR/OUTCAR-$i-$((numnodes*rankspernode))
+   else
+      cp OUTCAR-$i $PBS_O_WORKDIR/OUTCAR-$i-${GWranks}
+   fi
+done
+
+rm WAVECAR WAVEDER CHGCAR OUTCAR OSZICAR PROCAR DOSCAR EIGENVAL
+
