@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+tmpdir="$(mktemp -d)"
+trap "rm -rf $tmpdir" 0 INT QUIT ABRT PIPE TERM
+
+# A minimalist bonnie++ run
+/usr/sbin/bonnie++ -q -u $(id -u) -d "$tmpdir" -s 0 -n 1 > /dev/null; then
+exit $?
