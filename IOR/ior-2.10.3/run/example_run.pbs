@@ -1,0 +1,9 @@
+#!/bin/bash -l
+#PBS -q batch-h
+#PBS -A <account>
+#PBS -l nodes=1
+#PBS -l walltime=16:00:00 
+#PBS -j eo 
+
+cd $PBS_O_WORKDIR 
+mpirun -np 24 ./IOR -f ./ESIFHPC2-Script.ior
