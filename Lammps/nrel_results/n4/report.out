@@ -1,0 +1,12 @@
+Final Report:
+Small:
+Loop time of 1465.07 on 96 procs for 20000 steps with 744000 atoms
+Performance: 1.179 ns/day, 20.348 hours/ns, 13.651 timesteps/s
+
+Medium:
+Loop time of 1147.73 on 96 procs for 2000 steps with 5952000 atoms
+Performance: 0.151 ns/day, 159.407 hours/ns, 1.743 timesteps/s
+
+Large:
+Loop time of 932.054 on 96 procs for 200 steps with 47616000 atoms
+Performance: 0.019 ns/day, 1294.519 hours/ns, 0.215 timesteps/s
