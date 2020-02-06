@@ -1,0 +1,4 @@
+export JAVA_HOME=/usr/lib/jvm/java
+export SCALA_HOME=$(pwd)/scala-2.11.8
+export MAVEN_HOME=$(pwd)/apache-maven-3.3.9
+export PATH=$SCALA_HOME/bin:$MAVEN_HOME/bin:$PATH

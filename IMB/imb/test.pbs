@@ -1,0 +1,77 @@
+#!/bin/bash --login
+#PBS -N IMBtest
+#PBS -q batch
+#PBS -l nodes=8
+#PBS -l walltime=00:30:00
+#PBS -A hpc-apps
+#PBS -o IMB.out
+#PBS -e IMB.err
+
+# Example script to generate NREL data with Intel MPI.
+
+node_counts=(2 $((PBS_NUM_NODES/8)) $((PBS_NUM_NODES/4)) $((PBS_NUM_NODES/2)) $((PBS_NUM_NODES)))
+echo 'node_counts array: '${node_counts[*]}
+cores_per_node=`cat /proc/cpuinfo | grep 'processor' | wc -l`
+for i in $(seq 0 $((${#node_counts[@]}-1)))
+do
+   packed[$i]=$((cores_per_node*${node_counts[i]}))
+done
+echo 'packed array: '${packed[*]}
+
+## PingPong. Example not topologically aware, change for 2 actual tests
+for i in 0 524288
+do
+   echo $i >> msglens
+done
+echo 'Pingpong' > IMB_SELECT_MPI1
+cat $PBS_NODEFILE | sort -u | head -2 | sed 's/\(.*\)/\1:1/' > nodefile
+
+mpirun -n 2 -genv I_MPI_DEBUG 5 -machinefile ./nodefile src/IMB-MPI1 -input IMB_SELECT_MPI1 -msglen ./msglens
+rm msglens IMB_SELECT_MPI1 nodefile
+
+## Barrier
+echo '0' > msglens
+echo 'Barrier' > IMB_SELECT_MPI1
+
+# 1 rank per node
+cat $PBS_NODEFILE | sort -u | sed 's/\(.*\)/\1:1/' > nodefile
+
+for i in ${node_counts[*]}
+do
+   mpirun -n $i -genv I_MPI_DEBUG 5 -machinefile ./nodefile src/IMB-MPI1 -npmin $i -input IMB_SELECT_MPI1 -msglen ./msglens
+done
+rm nodefile
+
+# N ranks per node
+cat $PBS_NODEFILE | sort -u | sed 's/\(.*\)/\1:'$cores_per_node'/' > nodefile
+for i in ${packed[*]}
+do
+   mpirun -n $i -genv I_MPI_DEBUG 5 -machinefile ./nodefile src/IMB-MPI1 -npmin $i -input IMB_SELECT_MPI1 -msglen ./msglens
+done
+rm msglens IMB_SELECT_MPI1 nodefile
+
+## All others
+for i in 0 65536 524288 4194304
+do
+   echo $i >> msglens
+done
+
+for i in Alltoall Allgather Allreduce Sendrecv Exchange Uniband Biband
+do
+   echo $i > IMB_SELECT_MPI1
+   # 1 rank per node
+   cat $PBS_NODEFILE | sort -u | sed 's/\(.*\)/\1:1/' > nodefile
+   for j in ${node_counts[*]}
+   do
+      mpirun -n $j -genv I_MPI_DEBUG 5 -machinefile ./nodefile src/IMB-MPI1 -npmin $j -input IMB_SELECT_MPI1 -msglen ./msglens
+   done
+   rm nodefile
+   # N ranks per node
+   cat $PBS_NODEFILE | sort -u | sed 's/\(.*\)/\1:'$cores_per_node'/' > nodefile
+   for j in ${packed[*]}
+   do
+      mpirun -n $j -machinefile ./nodefile src/IMB-MPI1 -npmin $j -input IMB_SELECT_MPI1 -msglen ./msglens
+   done
+   rm nodefile
+done
+

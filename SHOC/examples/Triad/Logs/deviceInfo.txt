@@ -1,0 +1,62 @@
+Number of devices = 4
+Device 0:
+  name               = 'Tesla K80'
+  totalGlobalMem     = 11G
+  sharedMemPerBlock  = 48k
+  regsPerBlock       = 65536
+  warpSize           = 32
+  memPitch           = 2048M
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,64
+  maxGridSize[3]     = 2147483647,65535,65535
+  totalConstMem      = 64k
+  major (hw version) = 3
+  minor (hw version) = 7
+  clockRate          = 823500
+  textureAlignment   = 512
+Device 1:
+  name               = 'Tesla K80'
+  totalGlobalMem     = 11G
+  sharedMemPerBlock  = 48k
+  regsPerBlock       = 65536
+  warpSize           = 32
+  memPitch           = 2048M
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,64
+  maxGridSize[3]     = 2147483647,65535,65535
+  totalConstMem      = 64k
+  major (hw version) = 3
+  minor (hw version) = 7
+  clockRate          = 823500
+  textureAlignment   = 512
+Device 2:
+  name               = 'Tesla K80'
+  totalGlobalMem     = 11G
+  sharedMemPerBlock  = 48k
+  regsPerBlock       = 65536
+  warpSize           = 32
+  memPitch           = 2048M
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,64
+  maxGridSize[3]     = 2147483647,65535,65535
+  totalConstMem      = 64k
+  major (hw version) = 3
+  minor (hw version) = 7
+  clockRate          = 823500
+  textureAlignment   = 512
+Device 3:
+  name               = 'Tesla K80'
+  totalGlobalMem     = 11G
+  sharedMemPerBlock  = 48k
+  regsPerBlock       = 65536
+  warpSize           = 32
+  memPitch           = 2048M
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,64
+  maxGridSize[3]     = 2147483647,65535,65535
+  totalConstMem      = 64k
+  major (hw version) = 3
+  minor (hw version) = 7
+  clockRate          = 823500
+  textureAlignment   = 512
+Chose device: name='Tesla K80' index=0

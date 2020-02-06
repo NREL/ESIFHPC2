@@ -1,0 +1,2 @@
+Running this command to detect devices:
+/home/dvaidhyn/SHOC/build/bin/Serial/CUDA/BusSpeedDownload -i > Logs/deviceInfo.txt 2> Logs/deviceInfo.err

@@ -1,0 +1,15 @@
+--- Welcome To The SHOC Benchmark Suite version 1.1.5 --- 
+Hostname: hpgpgpu.hpc.nrel.gov 
+Platform selection not specified, default to platform #0
+Number of available platforms: 1 
+Number of available devices on platform 0 : 4
+Device 0: 'Tesla K80'
+Device 1: 'Tesla K80'
+Device 2: 'Tesla K80'
+Device 3: 'Tesla K80'
+Specified 4 device IDs: 0,1,2,3
+Using size class: 4
+
+--- Starting Benchmarks ---
+Running benchmark Triad
+    result for triad_bw:                         7.7386 GB/s
