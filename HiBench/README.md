@@ -19,12 +19,13 @@ How to Build
 ------------
 
 ### Pre-requisites
+We have tested HiBench using the following prerequisites.
 
-  * Scala 2.11.8 (tarball included here)
-  * Maven 3.0 (tarball included here)
+  * [Scala 2.11.8](https://scala-lang.org/download/all.html)
+  * [Maven 3.3.9](https://archive.apache.org/dist/maven/maven-3/3.3.9/)
   * Python 2.7.5
   * [HDP](https://hortonworks.com/downloads/#data-platform) 2.5.3.0-37
-  * Spark 1.6
+  * [Spark 1.6](https://archive.apache.org/dist/spark/spark-1.6.3/)
   
 For Scala and Maven, e.g.,
 
