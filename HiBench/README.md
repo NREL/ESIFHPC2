@@ -3,9 +3,7 @@ ESIF-HPC-2 HiBench Benchmark
 
 Licensing
 ---------
-HiBench is licensed under the Apache License 2.0, see LICENSE.txt in the supplied HiBench distribution.<br />
-Apache Maven is licensed under the Apache License 2.0, see LICENSE in the supplied Maven distribution.<br />
-Scala is licensed under the 3-clause BSD license, as stated in the LICENSE.md file of the supplied distribution.
+HiBench is licensed under the Apache License 2.0, see LICENSE.txt in the supplied HiBench distribution.
 
 Description
 -----------
