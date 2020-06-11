@@ -38,8 +38,11 @@ _NOTE: To checkout a specific version of a Git repository, the following workflo
 
 How to Run
 ----------
+### Mesh files
+There are two cases differing in mesh size, with 256 or 512 points per dimension. The latter file is over 7 GB, which is impractical to distribute via Git. As a result, we depend on the interested user to generate the mesh files from the data provided here. The mesh files can be generated using a utility in Nalu-Wind as described [here](https://naluwindutils.readthedocs.io/en/latest/user/abl_mesh.html). However, the complete Nalu-Wind package must be built to access this utility, and that requires a functional Trilinos installation, which can be somewhat complex to install. For that reason, we recommend using Spack to install Trilinos, and then the Nalu-Wind utilities in order to generate the required mesh files.
+
 ### Strong Scaling Test
-There are two cases differing in mesh size (256 and 512) that are provided. We provide input files for these two problem sizes (in directories `abl_3km_256` and `abl_3km_512`, respectively). To run, simply specify the input file and log file names:
+After generating the input mesh files (e.g., abl_3km_256.g), the tests may be run. We provide input files for these two problem sizes (in directories `abl_3km_256` and `abl_3km_512`, respectively). To run, simply specify the input file and log file names:
 
 ```
   mpirun -np 4 naluX -i abl_3km_256.i -o abl_3km_256.log
